@@ -1,0 +1,60 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId // Primary Key
+  name         String?   // User's name (optional)
+  phone_number String     @unique          // Unique phone number
+  email        String?   @unique          // Unique email (optional)
+  ratings      Float     @default(0)      // Ratings given to the user
+  totalRides   Float     @default(0)      // Total rides completed
+  createdAt    DateTime  @default(now())  // Record creation timestamp
+  updatedAt    DateTime  @default(now())  // Last updated timestamp
+  rides        Rides[]   @relation("UserRides")
+}
+
+enum VehicleType {
+  Car
+  Motocycle
+  CNG
+}
+model Driver {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId //
+  name                String
+  country             String
+  phone_number        String    @unique
+  email               String    @unique
+  vehicle_type        VehicleType
+  registration_number Float     @unique
+  registration_date   DateTime
+  driving_license     Float
+  vehicle_color       String?
+  rate                Float
+  ratings             Float    @default(0)
+  totalEarning        Float    @default(0)
+  totalRides          Float    @default(0)
+  pendingRides        Float    @default(0)
+  cancelRides         Float    @default(0)
+  status              String   @default("inactive")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @default(now())
+  rides               Rides[]  @relation("DriverRides")
+}
+
+model Rides {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId //
+  userId      String    @db.ObjectId
+  driverId    String    @db.ObjectId
+  charge      Float
+  user        User @relation("UserRides", fields: [userId], references: [id]) 
+  driver      Driver    @relation("DriverRides", fields:[driverId], references:[id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}

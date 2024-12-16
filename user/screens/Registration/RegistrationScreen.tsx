@@ -20,8 +20,10 @@ interface FormDataType {
 const RegistrationScreen = () => {
   const { colors } = useTheme();
   const { user } = useLocalSearchParams() as any;
+  const parsedUser = JSON.parse(user)
   const [emailFormatWarning, setEmailFormatWarning] = useState<string>("");
   const [showWarning, setShowWarning] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
     email: "",
@@ -38,18 +40,39 @@ const RegistrationScreen = () => {
   };
 
   const handleRegistration = async () => {
-    const userData: any = {
-      id: user?.id,
-      name: formData.name,
-      email: formData.email,
-      phone_number: user.phone_number
-    }
-    router.push({
-      pathname: "/(routes)/email-verification/",
-      params: {
-        user: userData
-      }
-    })
+    setLoading(true)
+    // const userData: any = {
+    //   id: parsedUser?.id,
+    //   name: formData.name,
+    //   email: formData.email,
+    //   phone_number: parsedUser.phone_number
+    // }
+ 
+      await axios.post("http://192.168.0.111:7000/api/v1/user/email-otp-verification",{
+          email: formData.email, 
+          name: formData.name, 
+          userId: parsedUser?.id
+      }).then((res)=> {
+        setLoading(false)
+        console.log(res)
+        const userData: any = {
+          id: parsedUser.id,
+          name: formData.name,
+          email: formData.email,
+          phone_number: parsedUser.phone_number,
+          token: res.data.token
+        }
+        router.push({
+          pathname: "/(routes)/email-verification/",
+          params: {
+            user: JSON.stringify(userData)
+          }
+        })
+          
+      }).catch((error)=> {
+        setLoading(false)
+          console.log(error)
+      })
   }
   return (
     <ScrollView>
@@ -101,9 +124,9 @@ const RegistrationScreen = () => {
               />
               <View style={styles.margin}>
                 <Button
-                  //   onPress={() => handleSubmit()}
+                  onPress={() => handleRegistration()}
                   title="Next"
-                  //   disabled={loading}
+                  disabled={loading}
                   backgroundColor={color.buttonBg}
                   textColor={color.whiteColor}
                 />

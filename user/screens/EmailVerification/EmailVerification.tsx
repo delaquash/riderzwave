@@ -10,6 +10,7 @@ import { style } from '../OtpVerification/styles'
 import { external } from "@/styles/external.style";
 import OTPTextInput from "react-native-otp-textinput";
 import { useToast } from 'react-native-toast-notifications'
+import axios from 'axios'
 
 
 const EmailVerification = () => {
@@ -18,6 +19,18 @@ const EmailVerification = () => {
   const [loading, setLoading] = useState(false)
   const { user } = useLocalSearchParams() as any
   const parsedUser = JSON.parse(user)
+
+  const handleSubmit = async() => {
+    await axios.post("http://192.168.0.111:7000/api/v1/user/email-otp-verification",{
+        email: parsedUser?.email, 
+        name: parsedUser?.name, 
+        userId: parsedUser?.id
+    }).then((res)=> {
+        console.log(res)
+    }).catch((error)=> {
+        console.log(error)
+    })
+  }
   return (
     <AuthContainer
         topSpace={windowHeight(240)}

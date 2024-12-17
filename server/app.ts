@@ -8,7 +8,7 @@ import Nylas from "nylas";
 export const app = express();
 export const nylas = new Nylas({
     apiKey: process.env.NYLAS_API_KEY!,
-    apiUri: "<NYLAS_API_URI>"
+    apiUri: process.env.NYLAS_API_URI
   })
 // body parser
 app.use(express.json({ limit: "50mb" }));

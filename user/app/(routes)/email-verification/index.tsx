@@ -1,11 +1,13 @@
 import EmailVerification from '@/screens/EmailVerification/EmailVerification'
 import React from 'react'
+import { View } from 'react-native'
 
 const index = () => {
   return (
-    <div>
+    <View>
       <EmailVerification />
-    </div>
+    </View>
   )
 }
 
+export default index;

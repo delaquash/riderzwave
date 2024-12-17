@@ -14,7 +14,6 @@ import { useToast } from "react-native-toast-notifications";
 import axios from "axios";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
 const OtpVerification = () => {
     const toast = useToast()
     const [otp, setOtp] = useState("")
@@ -41,7 +40,7 @@ const OtpVerification = () => {
                         pathname: "/(routes)/registration",
                         params: {
                             user: JSON.stringify(res.data.user)
-                        }
+                        } 
                     })
                     toast.show(res.data.message)
                 } else {

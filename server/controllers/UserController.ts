@@ -170,8 +170,8 @@ export const sendOtpToMail= async (req: Request, res: Response, next: NextFuncti
           identifier: process.env.NYLAS_TEST_GRANT_KEY!,
           requestBody:{
             to: [{
-              name,
-              email
+              name: name,
+              email: email
             }], 
             subject: "Verify your email address!",
             body: `
@@ -179,18 +179,19 @@ export const sendOtpToMail= async (req: Request, res: Response, next: NextFuncti
                  <p>Your Ridewave verification code is ${otp}. If you didn't request for this OTP, please ignore this email!</p>
                  <p>Thanks,<br>Ridewave Team</p>
               
-              `
-            }
+              `,
+            },
+          });
+          res.status(201).json({
+            success: true,
+            message: "OTP sent to your email address",
+            token
           })
         } catch (error) {
          console.log(error)
       }
 
-      res.status(201).json({
-        success: true,
-        message: "OTP sent to your email address",
-        token
-      })
+     
     } catch (error) {
       console.log(error)
       next(error)

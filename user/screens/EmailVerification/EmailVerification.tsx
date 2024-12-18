@@ -42,7 +42,19 @@ export default function EmailVerificationScreen() {
   //     });
   // };
 
-  const handleSubmit = async() => {};
+  const handleSubmit = async() => {
+    const otpNumbers = `${otp}`;
+
+    await axios
+    .put("http://192.168.0.111:7000/api/v1/user/email-otp-verify", {
+      token: parsedUser.token,
+      otp: otpNumbers,
+    }).then((res)=> {
+      console.log(res)
+    }).catch((error)=> {
+      console.log(error)
+    })
+  };
   
   return (
     <AuthContainer

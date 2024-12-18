@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { BadRequestError } from "../error/errorMessage";
 import prisma from "../utils/prisma";
 import { nylas } from "../app";
+import { sendToken } from "../utils/sendToken";
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -196,4 +197,43 @@ export const sendOtpToMail= async (req: Request, res: Response, next: NextFuncti
       console.log(error)
       next(error)
     }
+}
+
+export const verifyEmailOTP = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { token, otp } = req.body;
+    const newUser: any = jwt.verify(token, process.env.EMAIL_ACTIVATION_SECRET!)
+    if(newUser.otp !== otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP"
+      })
+    }
+
+    const { name, email, userId } = newUser.user;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (user?.email === null) {
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          name: name,
+          email: email,
+        },
+      });
+      await sendToken(updatedUser, res);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: "Your otp is expired!",
+    });
+  }
 }

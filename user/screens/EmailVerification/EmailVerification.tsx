@@ -51,6 +51,7 @@ export default function EmailVerificationScreen() {
       otp: otpNumbers,
     }).then((res)=> {
       console.log(res)
+      router.push("/(tabs)/home")
     }).catch((error)=> {
       console.log(error)
     })

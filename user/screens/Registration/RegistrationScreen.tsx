@@ -43,20 +43,20 @@ const RegistrationScreen = () => {
 
   const handleRegistration = async () => {
     setLoading(true)
-      await axios.post("http://192.168.0.111:7000/api/v1/user/email-otp-verification",{
+      await axios.post("http://192.168.0.111:7000/api/v1/user/email-otp-request",{
           email: formData.email, 
           name: formData.name, 
           userId: parsedUser?.id
       }).then((res)=> {
         setLoading(false)
-        console.log(res)
+        // console.log(res)
         const userData: any = {
           id: parsedUser?.id,
           name: formData.name,
           email: formData.email,
           phone_number: parsedUser?.phone_number,
           token: res.data.token
-        }
+        };
         router.push({
           pathname: "/(routes)/email-verification",
           params: {

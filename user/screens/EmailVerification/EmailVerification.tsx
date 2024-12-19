@@ -12,7 +12,7 @@ import color from "@/themes/app.colors";
 import { Toast } from "react-native-toast-notifications";
 import OTPTextInput from "react-native-otp-textinput";
 import axios from "axios";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function EmailVerificationScreen() {
   const [otp, setOtp] = useState("");
@@ -20,42 +20,42 @@ export default function EmailVerificationScreen() {
   const { user } = useLocalSearchParams() as any;
   const parsedUser = JSON.parse(user);
 
-  // const handleSubmit = async () => {
-  //   setLoader(true);
-  //   const otpNumbers = `${otp}`;
-  //   await axios
-  //     .put(`${process.env.EXPO_PUBLIC_SERVER_URI}/email-otp-verify`, {
-  //       token: parsedUser.token,
-  //       otp: otpNumbers,
-  //     })
-  //     .then(async (res: any) => {
-  //       setLoader(false);
-  //       await AsyncStorage.setItem("accessToken", res.data.accessToken);
-  //       router.push("/(tabs)/home");
-  //     })
-  //     .catch((error) => {
-  //       setLoader(false);
-  //       Toast.show(error.message, {
-  //         placement: "bottom",
-  //         type: "danger",
-  //       });
-  //     });
-  // };
-
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
+    setLoader(true);
     const otpNumbers = `${otp}`;
-
     await axios
-    .put("http://192.168.0.111:7000/api/v1/user/email-otp-verify", {
-      token: parsedUser.token,
-      otp: otpNumbers,
-    }).then((res)=> {
-      console.log(res)
-      router.push("/(tabs)/home")
-    }).catch((error)=> {
-      console.log(error)
-    })
+      .put("http://192.168.0.111:7000/api/v1/user/email-otp-verify", {
+        token: parsedUser.token,
+        otp: otpNumbers,
+      })
+      .then(async (res: any) => {
+        setLoader(false);
+        await AsyncStorage.setItem("accessToken", res.data.accessToken);
+        router.push("/(tabs)/home");
+      })
+      .catch((error) => {
+        setLoader(false);
+        Toast.show(error.message, {
+          placement: "bottom",
+          type: "danger",
+        });
+      });
   };
+
+  // const handleSubmit = async() => {
+  //   const otpNumbers = `${otp}`;
+
+  //   await axios
+  //   .put("http://192.168.0.111:7000/api/v1/user/email-otp-verify", {
+  //     token: parsedUser.token,
+  //     otp: otpNumbers,
+  //   }).then((res)=> {
+  //     console.log(res)
+  //     router.push("/(tabs)/home")
+  //   }).catch((error)=> {
+  //     console.log(error)
+  //   })
+  // };
   
   return (
     <AuthContainer

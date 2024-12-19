@@ -86,11 +86,7 @@ export const verifyOtp = async (
 
     if (isUserExist) {
         // Send success response if user already exist
-        res.status(200).json({
-            success: true,
-            user: isUserExist,
-            message: "OTP verified successfully.",
-          });
+      await sendToken(res, isUserExist)
     } else {
       // create new user
       const newlyCreatedUser = await prisma.user.create({
@@ -202,7 +198,9 @@ export const sendOtpToMail= async (req: Request, res: Response, next: NextFuncti
 export const verifyEmailOTP = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token, otp } = req.body;
-    const newUser: any = jwt.verify(token, process.env.EMAIL_ACTIVATION_SECRET!)
+    const newUser: any = jwt.verify(
+      token, process.env.EMAIL_ACTIVATION_SECRET!
+    )
     if(newUser.otp !== otp) {
       return res.status(400).json({
         success: false,
@@ -210,8 +208,8 @@ export const verifyEmailOTP = async (req: Request, res: Response, next: NextFunc
       })
     }
 
-    const { name, email, userId } = newUser.user;
-
+    const { name, email, userId } = newUser.users;
+    
     const user = await prisma.user.findUnique({
       where: {
         id: userId,

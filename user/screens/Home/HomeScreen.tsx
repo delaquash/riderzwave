@@ -70,5 +70,6 @@ export default function HomeScreen() {
         </View>
       </SafeAreaView>
     </View>
+
   );
 }

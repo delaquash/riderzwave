@@ -12,6 +12,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { commonStyles } from "@/styles/common.style";
 import { useToast } from "react-native-toast-notifications";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const OtpVerification = () => {
@@ -33,7 +34,7 @@ const OtpVerification = () => {
             await axios.post("http://192.168.0.111:7000/api/v1/user/verifyOtp",{
                 otp: otpNumber,
                 phone_number: ValidPhoneNumber
-            }).then((res)=> {
+            }).then(async(res)=> {
                 setLoading(false)
                 if(res.data.user.email === null){
                     router.push({
@@ -44,6 +45,7 @@ const OtpVerification = () => {
                     })
                     toast.show(res.data.message)
                 } else {
+                    await AsyncStorage.setItem("accessToken", res.data.token)
                     router.push("/(tabs)/home")
                 }
             }).catch((error)=> {

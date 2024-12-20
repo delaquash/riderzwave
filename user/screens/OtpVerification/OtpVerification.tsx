@@ -13,8 +13,6 @@ import { commonStyles } from "@/styles/common.style";
 import { useToast } from "react-native-toast-notifications";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-
 const OtpVerification = () => {
     const toast = useToast()
     const [otp, setOtp] = useState("")
@@ -46,7 +44,7 @@ const OtpVerification = () => {
                     })
                     toast.show(res.data.message)
                 } else {
-                    await AsyncStorage.setItem("accessToken", res.data.token)
+                    await AsyncStorage.setItem("accessToken", res.data.accessToken)
                     router.push("/(tabs)/home")
                 }
             }).catch((error)=> {

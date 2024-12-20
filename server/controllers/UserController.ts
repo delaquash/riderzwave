@@ -51,6 +51,61 @@ export const registerUser = async (
   }
 };
 
+// export const verifyOtp = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { phone_number, otp } = req.body;
+//     if (!phone_number || !otp) {
+//       throw new BadRequestError();
+//     }
+
+//     // Call Twilio API
+//      await client.verify.v2?.services(process.env.TWILIO_SERVICE_SID!)
+//       .verificationChecks.create({
+//         to: phone_number,
+//         code: otp,
+//       });
+
+//     // if (!verification.valid) {
+//     //   throw new BadRequestError();
+//     // }
+//     // const user = await prisma.user.create({
+//     //     phone_number: phone_number
+//     // })
+
+//     // check if user exist
+//     const isUserExist = await prisma.user.findUnique({
+//       where: {
+//         phone_number
+//       },
+//     });
+
+//     if (isUserExist) {
+//         // Send success response if user already exist
+//       await sendToken(res, isUserExist)
+//     } else {
+//       // create new user
+//       const newlyCreatedUser = await prisma.user.create({
+//         data: {
+//           phone_number: phone_number,
+//         },
+//       });
+//       // Send success response
+//       res.status(200).json({
+//         success: true,
+//         user: newlyCreatedUser,
+//         message: "OTP verified successfully.",
+//       });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+
 export const verifyOtp = async (
   req: Request,
   res: Response,
@@ -58,51 +113,47 @@ export const verifyOtp = async (
 ) => {
   try {
     const { phone_number, otp } = req.body;
-    if (!phone_number || !otp) {
-      throw new BadRequestError();
-    }
 
-    // Call Twilio API
-    const verification = await client.verify.v2
-      ?.services(process.env.TWILIO_SERVICE_SID!)
-      .verificationChecks.create({
-        to: phone_number,
-        code: otp,
-      });
-
-    if (!verification.valid) {
-      throw new BadRequestError();
-    }
-    // const user = await prisma.user.create({
-    //     phone_number: phone_number
-    // })
-
-    // check if user exist
-    const isUserExist = await prisma.user.findUnique({
-      where: {
-        phone_number: phone_number,
-      },
-    });
-
-    if (isUserExist) {
-        // Send success response if user already exist
-      await sendToken(res, isUserExist)
-    } else {
-      // create new user
-      const newlyCreatedUser = await prisma.user.create({
-        data: {
-          phone_number: phone_number,
+    try {
+      await client.verify.v2
+        .services(process.env.TWILIO_SERVICE_SID!)
+        .verificationChecks.create({
+          to: phone_number,
+          code: otp,
+        });
+      // is user exist
+      const isUserExist = await prisma.user.findUnique({
+        where: {
+          phone_number,
         },
       });
-      // Send success response
-      res.status(200).json({
-        success: true,
-        user: newlyCreatedUser,
-        message: "OTP verified successfully.",
+      if (isUserExist) {
+        await sendToken(isUserExist, res);
+      } else {
+        // create account
+        const user = await prisma.user.create({
+          data: {
+            phone_number: phone_number,
+          },
+        });
+        res.status(200).json({
+          success: true,
+          message: "OTP verified successfully!",
+          user: user,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({
+        success: false,
+        message: "Something went wrong!",
       });
     }
   } catch (error) {
-    next(error);
+    console.log(error);
+    res.status(400).json({
+      success: false,
+    });
   }
 };
 

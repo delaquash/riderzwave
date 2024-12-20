@@ -35,6 +35,7 @@ const OtpVerification = () => {
                 otp: otpNumber,
                 phone_number: ValidPhoneNumber
             }).then(async(res)=> {
+                console.log(res.data)
                 setLoading(false)
                 if(res.data.user.email === null){
                     router.push({
@@ -49,6 +50,7 @@ const OtpVerification = () => {
                     router.push("/(tabs)/home")
                 }
             }).catch((error)=> {
+                console.log(error)
                 setLoading(false)
                 toast.show(
                     "Something went wrong! Please recheck your number",

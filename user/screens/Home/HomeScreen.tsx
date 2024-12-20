@@ -41,6 +41,7 @@ export default function HomeScreen() {
           >
             Ride Wave
           </Text>
+          
           <LocationSearchBar />
         </View>
         <View style={{ padding: 5 }}>
@@ -57,7 +58,7 @@ export default function HomeScreen() {
               {recentRides?.map((item: any, index: number) => (
                 // <RideCard item={item} key={index} />
                 <View>
-                    Hello
+                    {/* Hello */}
                 </View>
               ))}
               {recentRides?.length === 0 && (

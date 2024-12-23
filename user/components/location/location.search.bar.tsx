@@ -19,7 +19,7 @@ export default function LocationSearchBar() {
         { paddingRight: windowWidth(40) },
         {borderRadius: windowHeight(10)}
       ]}
-      // onPress={() => router.push("/(routes)/rideplan")}
+      onPress={() => router.push("/(routes)/rideplan")}
     >
       <View style={{ flexDirection: "row", paddingLeft: windowWidth(10) }}>
         <Search />
@@ -41,6 +41,7 @@ export default function LocationSearchBar() {
             backgroundColor: "#fff",
             alignItems: "center",
             justifyContent: "center",
+            marginLeft: -70
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>

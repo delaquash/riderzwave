@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Redirect } from "expo-router";
@@ -8,6 +9,7 @@ export default function index() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    let isMounted = true
     const getData = async () => {
       try {
          setIsLoading(true)
@@ -20,10 +22,15 @@ export default function index() {
       } catch (error) {
        console.log(error)
       } finally {
-        setIsLoading(false)
+        if(isMounted) {
+          setIsLoading(false)
+        }
       }
     }
-    getData()
+    getData();
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   if (isLoading) {

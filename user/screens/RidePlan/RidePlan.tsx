@@ -13,11 +13,12 @@ import DownArrow from '@/assets/icons/downArrow'
 import PlaceHolder from '@/assets/icons/placeHolder'
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import  Location  from 'expo-location'
-import axios from 'axios'
+import axios from 'axios';
+import _ from "lodash";
 import { Toast } from 'react-native-toast-notifications'
 
 const RidePlan = () => {
-  const [marker, setMarker] = useState(null)
+  const [marker, setMarker] = useState<any>(null)
   const [places, setPlaces] = useState<any>([]);
   const [query, setQuery] = useState("");
   const [currentLocation, setCurrentLocation] = useState<any>(null)
@@ -70,7 +71,7 @@ const RidePlan = () => {
 
   const fetchPlaces = async(input: any) => {
       try {
-        const response =await axios.get(`https://maps.googleapis.com/maps/api/autocomplete/json`, {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/autocomplete/json`, {
           params: {
             input,
             key: process.env.EXPO_PUBLIC_GOOGLE_CLOUD_API_KEY,
@@ -97,6 +98,67 @@ const RidePlan = () => {
  
   const handleInputChange = (text: any) => {
     setQuery(text)
+  }
+
+const fetchTravelTimes = async(origin: any, destination: any) => {
+  const modes = ["driving", "walking", "bicycling", "transit"];
+  let travelTimes = {
+    driving: null,
+    walking: null,
+    bicycling: null,
+    transit: null
+  } as any;
+  for (const mode of modes) {
+    let params = {
+      origins: `${origin.latitude},${origin.longitude}`,
+      destinations: `${destination.latitude},${destination.longitude}`,
+      key: process.env.EXPO_PUBLIC_GOOGLE_CLOUD_API_KEY!,
+      mode: mode
+    } as any;
+
+    if(mode === "driving") {
+      params.departure_time = "now"
+    }
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/distancematrix/json`,
+        { params }
+      )
+    } catch (error) {
+      
+    }
+  }
+}
+  const handlePlaceSelect = async(placeId: any) => {
+    try {
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json`, {
+        params: {
+          place_id: placeId,
+          key: process.env.EXPO_PUBLIC_GOOGLE_CLOUD_API_KEY,
+          language: "en",
+        }
+      })
+      const { lat, lng } = response.data.result.geometry.location;
+      const selectedDestination = {latitude: lat, longitude: lng};
+      setRegion({
+        ...region,
+        latitude: lat,
+        longitude: lng
+      });
+      setMarker({
+        latitude: lat,
+        longitude: lng
+      });
+      setPlaces([]);
+      setLocationSelected(true);
+      setkeyboardAvoidingHeight(false);
+      if(currentLocation) {
+        await fetchTravelTimes(currentLocation, selectedDestination)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <KeyboardAvoidingView
@@ -246,6 +308,7 @@ const RidePlan = () => {
                     }
                   }}
                   textInputProps={{
+                    onChangeText: (text) => handleInputChange(text),
                     value: query,
                     onFocus: () => setkeyboardAvoidingHeight(true)
                   }}
@@ -266,6 +329,7 @@ const RidePlan = () => {
               alignItems: "center",
               marginBottom: windowHeight(20)
             }}
+            onPress={()=> handlePlaceSelect(place.place_id)}
           >
             <PickUpLocation />
             <Text

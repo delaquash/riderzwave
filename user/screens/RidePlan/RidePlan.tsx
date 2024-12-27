@@ -27,6 +27,8 @@ import _ from "lodash";
 import { Toast } from "react-native-toast-notifications";
 import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 import Button from "@/components/common/button";
+import { parseDuration } from "@/utils/time/ParsedDuration";
+import moment from "moment";
 
 const RidePlan = () => {
   const [marker, setMarker] = useState<any>(null);
@@ -89,7 +91,13 @@ const RidePlan = () => {
 
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
   };
-  
+
+  const getEstimatedArrivalTime = (travelTime: any) => {
+    const now = moment();
+    const travelMinutes = parseDuration(travelTime);
+    const arrivalTime = now.add(travelMinutes, "minutes");
+    return arrivalTime.format("hh:mm A");
+  };
   const fetchPlaces = async (input: any) => {
     try {
       const response = await axios.get(
@@ -191,6 +199,17 @@ const RidePlan = () => {
       console.log(error);
     }
   };
+
+  useEffect(()=> {
+    if(marker && currentLocation) {
+      const distance = calculateDistance(
+        currentLocation.latitude,
+        currentLocation.longitude,
+        marker.latitude,
+        marker.longitude
+      )
+    }
+  },[marker, currentLocation])
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

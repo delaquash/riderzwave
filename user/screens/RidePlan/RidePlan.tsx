@@ -35,7 +35,7 @@ const RidePlan = () => {
   const [places, setPlaces] = useState<any>([]);
   const [query, setQuery] = useState("");
   const [currentLocation, setCurrentLocation] = useState<any>(null);
-  const [distance, setDistance] = useState(null);
+  const [distance, setDistance] = useState<any>(null);
   const [locationSelected, setLocationSelected] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState("car");
   const [region, setRegion] = useState<any>({
@@ -208,6 +208,7 @@ const RidePlan = () => {
         marker.latitude,
         marker.longitude
       )
+      setDistance(distance)
     }
   },[marker, currentLocation])
   return (
@@ -304,7 +305,7 @@ const RidePlan = () => {
                               {/* RideWave {driver?.vehicle_type} */}
                             </Text>
                             <Text style={{ fontSize: 16 }}>
-                              {/* {getEstimatedArrivalTime(travelTimes.driving)}{" "} */}
+                              {getEstimatedArrivalTime(travelTimes.driving)}{" "}
                               dropoff
                             </Text>
                       </View>
@@ -314,10 +315,10 @@ const RidePlan = () => {
                               fontWeight: "600",
                             }}
                           >
-                            BDT{" "}
-                            {/* {(
-                              distance.toFixed(2) * parseInt(driver.rate)
-                            ).toFixed(2)} */}
+                            NGN{" "}
+                            {(distance.toFixed(2) 
+                            // *  parseInt(driver.rate)
+                            ).toFixed(2)}
                           </Text>
                     </View>
                   </Pressable>

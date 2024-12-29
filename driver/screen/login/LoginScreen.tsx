@@ -11,9 +11,9 @@ import Images from "@/utils/images";
 import styles from './style';
 
 const LoginScreen = () => {
-  const [phone_number, setphone_number] = useState("");
+  const [phone_number, setPhone_number] = useState("");
   const [loading, setloading] = useState(false);
-  const [countryCode, setCountryCode] = useState("+880");
+  const [countryCode, setCountryCode] = useState("+234");
     return (
       <AuthContainer
         topSpace={windowHeight(150)}
@@ -27,7 +27,7 @@ const LoginScreen = () => {
                 <View style={[external.mt_25, external.Pb_10]}>
                   <PhoneNumberInput
                     phone_number={phone_number}
-                    setphone_number={setphone_number}
+                    setPhone_number={setPhone_number}
                     countryCode={countryCode}
                     setCountryCode={setCountryCode}
                   />

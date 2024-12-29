@@ -47,7 +47,7 @@ export default function PhoneNumberInput({ width, countryCode, phone_number, set
             keyboardType="numeric"
           /> */}
              <SelectInput 
-            title="+234"
+            // title="+234"
             placeholder="Select Country Code"
             value={countryCode}
             showWarning={false}

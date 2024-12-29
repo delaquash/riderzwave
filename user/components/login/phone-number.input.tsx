@@ -5,8 +5,9 @@ import { external } from "@/styles/external.style";
 import styles from "@/screens/LoginScreen/styles";
 import color from "@/themes/app.colors";
 import SelectInput from "../common/select-input";
-import { useState } from "react";
+import React from "react";
 import { countryItems } from "@/configs/countryList";
+
 
 
 interface Props {

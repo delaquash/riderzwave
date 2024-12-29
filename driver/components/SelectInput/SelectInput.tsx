@@ -5,6 +5,7 @@ import fonts from "@/themes/app.fonts";
 import { windowHeight, windowWidth } from "@/themes/app.constant";
 import color from "@/themes/app.colors";
 import RNPickerSelect from "react-native-picker-select";
+import { countryNameItems } from "@/configs/countryNameList";
 
 interface InputProps {
   title?: string;
@@ -33,7 +34,7 @@ export default function SelectInput({
       )}
       <RNPickerSelect
         onValueChange={onValueChange}
-        items={items}
+        items={countryNameItems}
         placeholder={{ label: value }}
         style={{
           inputIOS: {

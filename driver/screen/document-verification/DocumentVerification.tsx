@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { windowHeight, windowWidth } from '@/themes/app.constant'
 import ProgressBar from '@/components/common/ProgressBar'
 import TitleView from '@/components/TitleView/TitleView'
@@ -15,7 +15,25 @@ import { useTheme } from '@react-navigation/native'
 
 const DocumentVerification = () => {
   const { colors } = useTheme();
-  
+  const [showWarning, setShowWarning] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    vehicleType: "Car",
+    registrationNumber: "",
+    registrationDate: "",
+    drivingLicenseNumber: "",
+    color: "",
+    rate: "",
+  });
+
+  const handleChange = (key: string, value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [key]: value,
+    }));
+  };
+
+
   return (
     <ScrollView>
       <View>
@@ -49,8 +67,63 @@ const DocumentVerification = () => {
                 <SelectInput 
                   title='Vehicle Type'
                   placeholder='Choose your vehicle type'
-                  value={}
+                  value={formData.vehicleType}
+                  onValueChange={(text)=>handleChange("vehicleType", text)}
+                  showWarning={showWarning && formData.vehicleType === ""}
+                  warning={"Please choose your vehicle type"}
+                  items={[
+                    { label: "Car", value: "Car" },
+                    { label: "Motorcycle", value: "Motorcycle" },
+                    { label: "cng", value: "cng" },
+                  ]}
+                />
+                <Input 
+                  title='Vehicle Registration Date'
+                  placeholder='Enter Your Vehicle Registration Date'
+                  value={formData.registrationDate}
+                  onChangeText={(text)=> handleChange("registrationDate", text)}
+                  showWarning={showWarning && formData.registrationDate === ""}
+                  warning={"Please enter your Registration Date Number"}
+                />
+                <Input 
+                  title={"Driving Licence Number"}
+                  placeholder={"Enter your driving licence number"}
+                  keyboardType='number-pad'
+                  value={formData.drivingLicenseNumber}
+                  onChangeText={(text)=> handleChange("drivingLicenseNumber", text)}
+                  showWarning={showWarning && formData.drivingLicenseNumber === ""}
+                  warning={"Please enter your Driving Licence Number"}
                 
+                />
+                <Input
+                title={"Vehicle Color"}
+                placeholder={"Enter your vehicle color"}
+                value={formData.color}
+                onChangeText={(text) => handleChange("color", text)}
+                showWarning={showWarning && formData.color === ""}
+                warning={"Please enter your vehicle color!"}
+              />
+              <Input
+                title={"Rate per km"}
+                placeholder={
+                  "How much you want to charge from your passenger per km."
+                }
+                keyboardType="number-pad"
+                value={formData.rate}
+                onChangeText={(text) => handleChange("rate", text)}
+                showWarning={showWarning && formData.rate === ""}
+                warning={
+                  "Please enter how much you want to charge from your customer per km."
+                }
+              />
+              </View>
+              <View style={style.margin}>
+                <Button 
+                  // onPress={()=>handleSubmit()}
+                  title={"Submit"}
+                  height={windowHeight(30)}
+                  backgroundColor={color.buttonBg}
+                  textColor={color.whiteColor}
                 />
               </View>
             </View>

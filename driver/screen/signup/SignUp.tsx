@@ -10,6 +10,7 @@ import { useTheme } from '@react-navigation/native';
 import Button from '@/components/common/button';
 import color from '@/themes/app.colors';
 import { countryNameItems } from '@/configs/countryNameList';
+import { router } from 'expo-router';
 
 
 const SignUp = () => {
@@ -29,6 +30,21 @@ const SignUp = () => {
         [key]: value,
       }));
     };
+
+
+    const goToDocument = () => {
+      const isEmailEmpty = formData.email.trim() === "";
+      const isEmailInvalid = !formData.email.includes("@") || !isEmailEmpty && emailFormatWarning !== "";
+
+      if(isEmailEmpty){
+        setShowWarning(true);
+      } else if (isEmailInvalid) {
+        setShowWarning(true);
+      } else {
+        setShowWarning(false)
+        router.push("/(routes)/document-verification")
+      }
+    }
 
     return (
         <ScrollView>
@@ -100,7 +116,7 @@ const SignUp = () => {
                 </View>
                 <View style={styles.margin}>
                   <Button
-                    // onPress={gotoDocument}
+                    onPress={goToDocument}
                     height={windowHeight(30)}
                     title={"Next"}
                     backgroundColor={color.buttonBg}

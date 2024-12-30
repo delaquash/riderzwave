@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import { Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import { windowHeight, windowWidth } from '@/themes/app.constant';
 import { router } from 'expo-router';
@@ -33,7 +33,7 @@ const LoginScreen = () => {
                   />
                   <View style={[external.mt_25, external.Pb_15]}>
                     <Button
-                      title="Get Otp"
+                      title="Get OTP"
                       disabled={loading}
                       height={windowHeight(35)}
                       // onPress={() => handleSubmit()}

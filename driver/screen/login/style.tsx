@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     top: windowHeight(-20),
   },
   countryCodeContainer: {
-    width: windowWidth(89),
+    width: windowWidth(100),
     height: windowHeight(39),
   },
   phoneNumberInput: {

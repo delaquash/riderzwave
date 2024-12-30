@@ -29,6 +29,7 @@ const SignUp = () => {
         [key]: value,
       }));
     };
+
     return (
         <ScrollView>
           <View>
@@ -65,7 +66,8 @@ const SignUp = () => {
                     title="Country"
                     placeholder="Select your country"
                     value={formData.country}
-                    onValueChange={(text) => handleChange("countryCode", text)}
+                    // onValueChange={(text) => handleChange("countryCode", text)}
+                    onValueChange={(value) => handleChange("country", value)}
                     showWarning={showWarning && formData.country === ""}
                     items={countryNameItems}
                   />

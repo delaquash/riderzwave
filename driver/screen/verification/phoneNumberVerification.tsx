@@ -22,7 +22,21 @@ export default function PhoneNumberVerificationScreen() {
     const [loader, setLoader] = useState(false);
 
     const handleSubmit = async () => {
-      
+      if(otp === ""){
+        Toast.show("Please fill the fields",{
+          placement: "bottom",
+          duration: 5000,
+          animationType:"slide-in"
+        })
+      } else {
+        setLoader(true)
+        const otpNumbers = `${otp}`;
+        await axios
+        .post("http://192.168.0.111:7000/api/v1/user/email-otp-verify", {
+          phone_number: driver?.phone_number,
+          otp: otpNumbers,
+        })
+      }
     }
     return (
         <AuthContainer

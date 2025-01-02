@@ -42,10 +42,14 @@ const SignUp = () => {
         setShowWarning(true);
       } else {
         setShowWarning(false)
+
+        const phoneNumberData = countryNameItems.find((i)=>i.label === formData.country);
+
+        const phone_number = `+${phoneNumberData?.value}${formData.phoneNumber}`
         const driverData = {
           name: formData.name,
           email: formData.email,
-          country: formData.country,
+          country: phone_number,
           phone_number: formData.phoneNumber
         }
 

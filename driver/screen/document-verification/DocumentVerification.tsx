@@ -34,7 +34,8 @@ const DocumentVerification = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
+    setLoading(true)
     const driver = {
       ...driverData,
       vehicleType: formData.vehicleType,
@@ -44,7 +45,22 @@ const DocumentVerification = () => {
       color: formData.color,
       rate: formData.rate,
     };
-    router.push({ pathname: "/(routes)/phoneNumberVerification", params: driver });
+    
+    await axios.post(`${process.env.EXPO_PUBLIC_SERVER_URI}/driver/send-otp-to-driver`, {
+      phone_number: `+${driverData.phone_number}`,
+    }).then((res) => {
+      router.push({ 
+        pathname: "/(routes)/phoneNumberVerification", 
+        params: driver 
+      })
+      setLoading(false)
+    }).catch((error)=> {
+      setLoading(false)
+      Toast.show(error.message, {
+        placement: "bottom",
+        type: "danger",
+      })
+    })
   }
 
   return (

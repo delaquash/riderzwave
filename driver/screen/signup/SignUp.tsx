@@ -42,9 +42,21 @@ const SignUp = () => {
         setShowWarning(true);
       } else {
         setShowWarning(false)
-        router.push("/(routes)/document-verification")
+        const driverData = {
+          name: formData.name,
+          email: formData.email,
+          country: formData.country,
+          phone_number: formData.phoneNumber
+        }
+
+
+        router.push({
+          pathname: "/(routes)/document-verification",
+          params: driverData
+        })
       }
     }
+
 
     return (
         <ScrollView>

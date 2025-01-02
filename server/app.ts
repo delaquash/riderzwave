@@ -2,6 +2,7 @@ require("dotenv").config();
 import cookieParser from "cookie-parser";
 import express, { Request, Response, NextFunction } from "express";
 import userRoutes from "./routes/userRoutes"
+import driverRoutes from "./routes/DriverRoutes"
 import { errorHandler } from "./middlewares/errorHandler";
 import Nylas from "nylas";
 
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/driver", driverRoutes);
 
 // testing route
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {

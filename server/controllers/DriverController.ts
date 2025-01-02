@@ -223,3 +223,55 @@ export const verifyOtp = async (
         console.log(error)
     }
   }
+
+  export const verifyEmailOTP = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { otp, token } = req.body;
+      const newDriver: any = jwt.verify(
+        token,
+        process.env.EMAIL_ACTIVATION_SECRET!,
+      )
+
+      if(newDriver.otp !== otp) {
+        return res.status(400).json({
+          success: false,
+          message: "OTP not correct or expired"
+        })
+      }
+      const {
+        name, 
+        country,
+        phone_number,
+        email,
+        vehicle_type,
+        registration_number,
+        registration_date,
+        driving_license,
+        vehicle_color,
+        rate
+      } = newDriver.driver
+
+      const driver = await prisma.driver.create({
+        data: {
+          name, 
+          country,
+          phone_number,
+          email,
+          vehicle_type,
+          registration_number,
+          registration_date,
+          driving_license,
+          vehicle_color,
+          rate
+        }
+      })
+
+      sendToken(driver, res)
+    } catch (error) {
+      console.log(error)
+      res.status(400).json({
+        success: false,
+        message: "Your otp is expired!",
+      });
+    }
+  }

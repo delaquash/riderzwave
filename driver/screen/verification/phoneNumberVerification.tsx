@@ -21,6 +21,9 @@ export default function PhoneNumberVerificationScreen() {
     const [otp, setOtp] = useState("");
     const [loader, setLoader] = useState(false);
 
+    const handleSubmit = async () => {
+      
+    }
     return (
         <AuthContainer
           topSpace={windowHeight(240)}

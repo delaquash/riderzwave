@@ -14,6 +14,7 @@ import { Toast } from 'react-native-toast-notifications'
 import { useTheme } from '@react-navigation/native'
 
 const DocumentVerification = () => {
+  const driverData = useLocalSearchParams();
   const { colors } = useTheme();
   const [showWarning, setShowWarning] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,18 @@ const DocumentVerification = () => {
     }));
   };
 
+  const handleSubmit = () => {
+    const driver = {
+      ...driverData,
+      vehicleType: formData.vehicleType,
+      registrationNumber: formData.registrationNumber,
+      registrationDate: formData.registrationDate,
+      drivingLicenseNumber: formData.drivingLicenseNumber,
+      color: formData.color,
+      rate: formData.rate,
+    };
+    router.push({ pathname: "/(routes)/phoneNumberVerification", params: driver });
+  }
 
   return (
     <ScrollView>
@@ -119,7 +132,7 @@ const DocumentVerification = () => {
               </View>
               <View style={style.margin}>
                 <Button 
-                  // onPress={()=>handleSubmit()}
+                  onPress={()=>handleSubmit()}
                   title={"Submit"}
                   height={windowHeight(30)}
                   backgroundColor={color.buttonBg}

@@ -172,7 +172,54 @@ export const verifyOtp = async (
             vehicle_color,
             rate,
           } = req.body;
+
+          const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+          const driver = {
+            name,
+            country,
+            phone_number,
+            email,
+            vehicle_type,
+            registration_number,
+            registration_date,
+            driving_license,
+            vehicle_color,
+            rate,
+          };  
+          const token = jwt.sign(
+            { driver, otp },
+            process.env.EMAIL_ACTIVATION_SECRET!,
+            {
+              expiresIn: "50m"
+            }
+          );
+        try {
+          await nylas.messages.send({
+            identifier: process.env.NYLAS_TEST_GRANT_KEY!,
+            requestBody:{
+              to: [{
+                name: name,
+                email: email
+              }], 
+              subject: "Verify your email address!",
+              body: `
+                   <p>Hi ${name},</p>
+                   <p>Your Ridewave verification code is ${otp}. If you didn't request for this OTP, please ignore this email!</p>
+                   <p>Thanks,<br>Ridewave Team</p>
+                
+                `,
+              },
+            });
+            res.status(201).json({
+              success: true,
+              message: "OTP sent to your email address",
+              token
+            })
+        } catch (error) {
+          console.log(error)
+        }
     } catch (error) {
-        
+        console.log(error)
     }
   }

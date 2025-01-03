@@ -15,7 +15,6 @@ import { Toast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-
 export default function PhoneNumberVerificationScreen() {
     const driver = useLocalSearchParams();
     const [otp, setOtp] = useState("");
@@ -32,9 +31,15 @@ export default function PhoneNumberVerificationScreen() {
         setLoader(true)
         const otpNumbers = `${otp}`;
         await axios
-        .post("http://192.168.0.111:7000/api/v1/user/email-otp-verify", {
+        .post("http://192.168.0.111:7000/api/v1/driver/verify-driver-otp", {
           phone_number: driver?.phone_number,
           otp: otpNumbers,
+        }).then((res)=> {
+          setLoader(false)
+          router.push({
+            pathname: "/(routes)/email-verification",
+            params: driver
+          })
         })
       }
     }
@@ -50,7 +55,7 @@ export default function PhoneNumberVerificationScreen() {
               />
               <OTPTextInput
                 handleTextChange={(code) => setOtp(code)}
-                inputCount={4}
+                inputCount={6}
                 textInputStyle={style.otpTextInput}
                 tintColor={color.subtitle}
                 autoFocus={false}

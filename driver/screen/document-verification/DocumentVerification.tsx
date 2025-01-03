@@ -46,9 +46,10 @@ const DocumentVerification = () => {
       rate: formData.rate,
     };
     
-    await axios.post(`${process.env.EXPO_PUBLIC_SERVER_URI}/driver/send-otp-to-driver`, {
+    await axios.post("http://192.168.0.111:7000/api/v1/driver/send-otp-to-driver", {
       phone_number: `+${driverData.phone_number}`,
     }).then((res) => {
+      console.log(res.data)
       router.push({ 
         pathname: "/(routes)/phoneNumberVerification", 
         params: driver 

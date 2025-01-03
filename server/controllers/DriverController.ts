@@ -22,9 +22,9 @@ export const sendingOtpToDriversPhone  = async (
   try {
     const { phone_number } = req.body;
 
-    if (!phone_number) {
-      throw new BadRequestError();
-    }
+    // if (!phone_number) {
+    //   throw new BadRequestError();
+    // }
 
     // Call Twilio API
     await client.verify.v2

@@ -53,7 +53,6 @@ const SignUp = () => {
           phone_number: formData.phoneNumber
         }
 
-
         router.push({
           pathname: "/(routes)/document-verification",
           params: driverData

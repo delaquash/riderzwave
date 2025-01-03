@@ -20,6 +20,25 @@ export default function EmailVerificationScreen() {
     const [loader, setLoader] = useState(false);
     const driver = useLocalSearchParams() as any;
 
+    const handleSubmit = async () => {
+      setLoader(true)
+      const otpNumbers = `${otp}`;
+      await axios
+        .post("http://192.168.0.111:7000/api/v1/driver/verify-email-otp", {
+          otp: otpNumbers,
+          token: driver.token,
+        }).then(async (res)=> {
+          setLoader(false)
+          await AsyncStorage.setItem("accessToken", res.data.accessToken);
+          router.push("/(tabs)/home");
+      }).catch((error) => {
+        setLoader(false);
+        Toast.show(error.message, {
+          placement: "bottom",
+          type: "danger",
+        });
+      })
+    }
     return (
       <AuthContainer
         topSpace={windowHeight(240)}
@@ -41,7 +60,7 @@ export default function EmailVerificationScreen() {
               <Button
                 title="Verify"
                 height={windowHeight(30)}
-                // onPress={() => handleSubmit()}
+                onPress={() => handleSubmit()}
                 disabled={loader}
               />
             </View>

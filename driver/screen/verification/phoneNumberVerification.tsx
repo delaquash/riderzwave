@@ -34,11 +34,23 @@ export default function PhoneNumberVerificationScreen() {
         .post("http://192.168.0.111:7000/api/v1/driver/verify-driver-otp", {
           phone_number: driver?.phone_number,
           otp: otpNumbers,
+          ...driver
         }).then((res)=> {
+          console.log(res.data)
+          const driverData = {
+            ...driver,
+            token: res.data.token
+          }
           setLoader(false)
           router.push({
             pathname: "/(routes)/email-verification",
-            params: driver
+            params: driverData
+          })
+        }).catch((error) => {
+          Toast.show("Your otp is incorrect",{
+            placement: "bottom",
+            duration: 5000,
+            type: "danger"
           })
         })
       }
@@ -64,7 +76,7 @@ export default function PhoneNumberVerificationScreen() {
                 <Button
                   title="Verify"
                   height={windowHeight(30)}
-                //   onPress={() => handleSubmit()}
+                  onPress={() => handleSubmit()}
                   disabled={loader}
                 />
               </View>

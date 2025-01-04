@@ -39,6 +39,6 @@ export default function index() {
   //   return null;
   // }
 
-  // return <Redirect href={!isLoggedIn ? "/(routes)/login" : "/(tabs)/home"} />;
-  return <Redirect href={!isLoggedIn ? "/(tabs)/home" : "/(tabs)/home"} />;
+  return <Redirect href={!isLoggedIn ? "/(routes)/login" : "/(tabs)/home"} />;
+
 }

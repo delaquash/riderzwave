@@ -14,6 +14,7 @@ const LoginScreen = () => {
   const [phone_number, setPhone_number] = useState("");
   const [loading, setloading] = useState(false);
   const [countryCode, setCountryCode] = useState("+234");
+  
     return (
       <AuthContainer
         topSpace={windowHeight(150)}

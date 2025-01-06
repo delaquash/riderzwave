@@ -11,6 +11,6 @@ router.post("/registration", verifyPhoneOtpForRegistration);
 // router.post("/send-otp-email", sendingOtpToEmail)
 router.post("/verify-email-otp",  verifyEmailOTP);
 
-router.get("/me", isDriverAuthenticated, getLoggedInDriverrData);
+router.get("/getDriversLoggedIn", isDriverAuthenticated, getLoggedInDriverrData);
 
 export default router;

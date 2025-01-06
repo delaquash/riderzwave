@@ -1,10 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-import { View, Text } from 'react-native'
-import React from 'react'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-useEffect(() => {},)
 
 
 const useGetUserData = () => {

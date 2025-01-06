@@ -232,6 +232,18 @@ export const verifyOtp = async (
         process.env.EMAIL_ACTIVATION_SECRET!,
       )
 
+
+      if (!otp || !token) {
+        return res.status(400).json({
+          success: false,
+          message: "OTP or token is required"
+        });
+      }
+
+      // Log the token for debugging
+      console.log("Received token:", token);
+      console.log("Received OTP:", otp);
+
       if(newDriver.otp !== otp) {
         return res.status(400).json({
           success: false,

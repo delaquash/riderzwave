@@ -40,12 +40,7 @@ export default function PhoneNumberInput({ width, countryCode, phone_number, set
             },
           ]}
         >
-          {/* <TextInput
-            style={[commonStyles.regularText]}
-            placeholderTextColor={color.subtitle}
-            placeholder="+880"
-            keyboardType="numeric"
-          /> */}
+          
             <SelectInput 
             // title="+234"
             placeholder="Select Country Code"
@@ -72,6 +67,8 @@ export default function PhoneNumberInput({ width, countryCode, phone_number, set
             placeholder={"Enter your number"}
             keyboardType="numeric"
             maxLength={10}
+            value={phone_number}
+            onChangeText={setPhone_number}
           />
         </View>
       </View>

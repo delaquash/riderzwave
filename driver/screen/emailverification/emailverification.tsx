@@ -28,6 +28,7 @@ export default function EmailVerificationScreen() {
           otp: otpNumbers,
           token: driver.token,
         }).then(async (res)=> {
+          console.log(res.data)
           setLoader(false)
           await AsyncStorage.setItem("accessToken", res.data.accessToken);
           router.push("/(tabs)/home");
@@ -51,7 +52,7 @@ export default function EmailVerificationScreen() {
             />
             <OTPTextInput
               handleTextChange={(code) => setOtp(code)}
-              inputCount={4}
+              inputCount={6}
               textInputStyle={style.otpTextInput}
               tintColor={color.subtitle}
               autoFocus={false}

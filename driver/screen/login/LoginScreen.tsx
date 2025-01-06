@@ -9,12 +9,48 @@ import AuthContainer from '@/utils/container/AuthContainer';
 import { external } from "@/styles/external.style";
 import Images from "@/utils/images";
 import styles from './style';
+import { Toast } from 'react-native-toast-notifications';
+import axios from 'axios';
 
 const LoginScreen = () => {
   const [phone_number, setPhone_number] = useState("");
   const [loading, setloading] = useState(false);
   const [countryCode, setCountryCode] = useState("+234");
-  
+
+  const handleSubmit = async () => {
+    console.log('Phone Number:', phone_number);
+    console.log('Country Code:', countryCode);
+    if (phone_number === "" || countryCode === "") {
+      Toast.show("Please enter phone number", {
+        placement: "bottom",
+        type: "danger",
+      })
+    } else {
+      setloading(true)
+      const phoneNumber = `${countryCode}${phone_number}`;
+      await axios.post("http://192.168.0.111:7000/api/v1/driver/send-otp-to-driver", {
+        phone_number: phoneNumber,
+      })
+      .then((res)=> {
+        console.log(res.data)
+        setloading(false)
+        const driver = {
+          phone_number: phoneNumber,
+        }
+        router.push({
+          pathname: "/(routes)/email-verification",
+          params: driver
+        })
+      }).catch((error)=> {
+        console.log(error)
+        setloading(false)
+        Toast.show(error.message, {
+          placement: "bottom",
+          type: "danger",
+        })
+      })
+    }
+  }
     return (
       <AuthContainer
         topSpace={windowHeight(150)}
@@ -37,7 +73,7 @@ const LoginScreen = () => {
                       title="Get OTP"
                       disabled={loading}
                       height={windowHeight(35)}
-                      // onPress={() => handleSubmit()}
+                      onPress={() => handleSubmit()}
                     />
                   </View>
                   <View

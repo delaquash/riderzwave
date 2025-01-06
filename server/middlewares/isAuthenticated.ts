@@ -6,6 +6,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: any;
+      driver?: any
     }
   }
 }
@@ -103,3 +104,57 @@ export const isAuthenticated = async (
     });
   }
 };
+
+
+export const isDriverAuthenticated = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeaders = req.headers.authorization;
+  if (!authHeaders || !authHeaders.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      message: "Authorization header is missing or malformed",
+    });
+  }
+
+  const token = authHeaders.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Token is missing",
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
+      id: string;
+    };
+
+    const driverData = await prisma.driver.findUnique({
+      where: { 
+            id: decoded.id 
+        },
+    });
+
+    if (!driverData) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    req.driver = driverData; // Ensure `req.user` is properly typed
+    next(); // Proceed to the next middleware or route handler
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
+  }
+};
+
+
+

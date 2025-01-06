@@ -287,3 +287,17 @@ export const verifyOtp = async (
       });
     }
   }
+
+  export const getLoggedInDriverrData = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+      const driver = req.driver
+      res.status(201).json({
+        
+        success: true,
+        driver
+      })
+    } catch (error) {
+      next(error)
+      console.log(error)
+    }
+  }

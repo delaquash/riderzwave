@@ -46,8 +46,29 @@ const HomeScreen = () => {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     });
-    const handleStatusChange = () => {
-        console.log("object")
+    const [currentLocationName, setcurrentLocationName] = useState("");
+    const [destinationLocationName, setdestinationLocationName] = useState("");
+    const [distance, setdistance] = useState<any>();
+    const [wsConnected, setWsConnected] = useState(false);
+    const [marker, setMarker] = useState<any>(null);
+    const [currentLocation, setCurrentLocation] = useState<any>(null);
+    const [lastLocation, setLastLocation] = useState<any>(null);
+    const handleStatusChange =async () => {
+        setIsOn(!isOn)
+        const accessToken = await AsyncStorage.getItem("accessToken")
+        const changeStatus = await axios.put("http://192.168.0.111:7000/api/v1/driver/update-status", {
+          status: isOn ? "active" : "inactive",
+        }, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        })
+        if(changeStatus.data){
+          setIsOn(!isOn)
+        }
+    }
+    const handleClose = () => {
+      setIsModalVisible(false)
     }
   return (
     <View style={[external.fx_1]}>
@@ -77,7 +98,7 @@ const HomeScreen = () => {
     <Modal
       transparent={true}
       visible={isModalVisible}
-      // onRequestClose={handleClose}
+      onRequestClose={handleClose}
     >
       <TouchableOpacity style={styles.modalBackground} activeOpacity={1}>
         <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
@@ -85,10 +106,10 @@ const HomeScreen = () => {
             <Text style={styles.modalTitle}>New Ride Request Received!</Text>
             <MapView
               style={{ height: windowHeight(180) }}
-            //   region={region}
-            //   onRegionChangeComplete={(region) => setRegion(region)}
+              region={region}
+              onRegionChangeComplete={(region) => setRegion(region)}
             >
-              {/* {marker && <Marker coordinate={marker} />}
+              {marker && <Marker coordinate={marker} />}
               {currentLocation && <Marker coordinate={currentLocation} />}
               {currentLocation && marker && (
                 <MapViewDirections
@@ -98,11 +119,11 @@ const HomeScreen = () => {
                   strokeWidth={4}
                   strokeColor="blue"
                 />
-              )} */}
+              )} 
             </MapView>
             <View style={{ flexDirection: "row" }}>
               <View style={styles.leftView}>
-                {/* <Location color={colors.text} /> */}
+                <Location color={colors.text} />
                 <View
                   style={[
                     styles.verticaldot,

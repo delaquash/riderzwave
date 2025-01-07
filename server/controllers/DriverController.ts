@@ -308,6 +308,7 @@ export const verifyOtp = async (
   }
 
   // export const verifyEmailOTP = async (req: Request, res: Response, next: NextFunction) => {
+
   //   try {
   //     const { otp, token } = req.body;
       
@@ -378,3 +379,28 @@ export const verifyOtp = async (
   //     });
   //   }
   // };
+
+  export const updateDriverStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { status } = req.body;
+      const driver = await prisma.driver.update({
+        where: {
+          id: req.driver.id!
+        },
+        data: {
+          status
+        }
+      })
+
+      res.status(200).json({
+        success: true,
+        driver
+        });
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong!"
+      })
+    }
+  }

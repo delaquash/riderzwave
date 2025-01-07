@@ -18,8 +18,8 @@ const LoginScreen = () => {
   const [countryCode, setCountryCode] = useState("+234");
 
   const handleSubmit = async () => {
-    console.log('Phone Number:', phone_number);
-    console.log('Country Code:', countryCode);
+    // console.log('Phone Number:', phone_number);
+    // console.log('Country Code:', countryCode);
     if (phone_number === "" || countryCode === "") {
       Toast.show("Please enter phone number", {
         placement: "bottom",
@@ -27,7 +27,7 @@ const LoginScreen = () => {
       })
     } else {
       setloading(true)
-      const phoneNumber = `${countryCode}${phone_number}`;
+      const phoneNumber = `+${countryCode}${phone_number}`;
       await axios.post("http://192.168.0.111:7000/api/v1/driver/send-otp-to-driver", {
         phone_number: phoneNumber,
       })
@@ -36,9 +36,10 @@ const LoginScreen = () => {
         setloading(false)
         const driver = {
           phone_number: phoneNumber,
+          // token: res.data.accessToken
         }
         router.push({
-          pathname: "/(routes)/email-verification",
+          pathname: "/(routes)/phoneNumberVerification",
           params: driver
         })
       }).catch((error)=> {

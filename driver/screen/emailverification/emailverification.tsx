@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import AuthContainer from "@/utils/container/AuthContainer";
 import { windowHeight } from "@/themes/app.constant";
@@ -20,6 +20,7 @@ export default function EmailVerificationScreen() {
     const [loader, setLoader] = useState(false);
     const driver = useLocalSearchParams() as any;
 
+ 
     const handleSubmit = async () => {
       setLoader(true)
       const otpNumbers = `${otp}`;

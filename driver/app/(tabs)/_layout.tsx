@@ -25,7 +25,7 @@ export default function TabLayout() {
               }
             } else if (route.name === "rides/index") {
               iconName = (
-                <History color={focused ? color.buttonBg : "#8F8F8F"} />
+                <History colors={focused ? color.buttonBg : "#8F8F8F"} />
               );
             } else if (route.name === "profile/index") {
               if (focused) {

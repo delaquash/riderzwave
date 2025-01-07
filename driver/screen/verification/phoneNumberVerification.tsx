@@ -31,7 +31,7 @@ export default function PhoneNumberVerificationScreen() {
         setLoader(true)
         const otpNumbers = `${otp}`;
         await axios
-        .post("http://192.168.0.111:7000/api/v1/driver/verify-driver-otp", {
+        .post("http://192.168.0.111:7000/api/v1/driver/registration", {
           phone_number: driver?.phone_number,
           otp: otpNumbers,
           ...driver
@@ -47,7 +47,9 @@ export default function PhoneNumberVerificationScreen() {
             params: driverData
           })
         }).catch((error) => {
-          Toast.show("Your otp is incorrect",{
+          console.log(error)
+          setLoader(false)
+            Toast.show("Your otp is incorrect",{
             placement: "bottom",
             duration: 5000,
             type: "danger"

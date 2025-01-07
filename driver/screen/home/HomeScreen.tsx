@@ -12,7 +12,6 @@ import {
   import Header from "@/components/common/Header";
 //   import { recentRidesData, rideData } from "@/configs/constants";
   import { useTheme } from "@react-navigation/native";
-//   import RenderRideItem from "@/components/ride/render.ride.item";
   import { external } from "@/styles/external.style";
   import styles from "./styles";
 //   import RideCard from "@/components/ride/ride.card";
@@ -31,6 +30,7 @@ import {
 //   import * as Notifications from "expo-notifications";
 //   import * as Device from "expo-device";
   import { router } from "expo-router";
+import RenderRideItem from "@/components/ride/RenderItem";
 const HomeScreen = () => {
     const { colors } = useTheme();
     const handleStatusChange = () => {
@@ -40,13 +40,13 @@ const HomeScreen = () => {
     <View style={[external.fx_1]}>
     <View style={styles.spaceBelow}>
       <Header isOn={true} toggleSwitch={() => handleStatusChange()} />
-      {/* <FlatList
+      <FlatList
         data={rideData}
         numColumns={2}
         renderItem={({ item }) => (
           <RenderRideItem item={item} colors={colors} />
         )}
-      /> */}
+      />
       <View style={[styles.rideContainer, { backgroundColor: colors.card }]}>
         <Text style={[styles.rideTitle, { color: colors.text }]}>
           Recent Rides

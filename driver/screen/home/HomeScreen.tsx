@@ -10,11 +10,10 @@ import {
   } from "react-native";
   import React, { useEffect, useRef, useState } from "react";
   import Header from "@/components/common/Header";
-//   import { recentRidesData, rideData } from "@/configs/constants";
+  import { recentRidesData, rideData } from "@/configs/constants";
   import { useTheme } from "@react-navigation/native";
   import { external } from "@/styles/external.style";
   import styles from "./styles";
-//   import RideCard from "@/components/ride/ride.card";
   import MapView, { Marker, Polyline } from "react-native-maps";
   import MapViewDirections from "react-native-maps-directions";
   import { windowHeight, windowWidth } from "@/themes/app.constant";
@@ -31,8 +30,22 @@ import {
 //   import * as Device from "expo-device";
   import { router } from "expo-router";
 import RenderRideItem from "@/components/ride/RenderItem";
+import RideCard from "@/components/ride/RiceCard";
+
+
 const HomeScreen = () => {
     const { colors } = useTheme();
+    const [recentRides, setrecentRides] = useState([]);
+    const [userData, setUserData] = useState<any>(null);
+    const [isOn, setIsOn] = useState<any>();
+    const [loading, setloading] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [region, setRegion] = useState<any>({
+      latitude: 6.5244,
+      longitude: 3.3792,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
     const handleStatusChange = () => {
         console.log("object")
     }
@@ -52,19 +65,19 @@ const HomeScreen = () => {
           Recent Rides
         </Text>
         <ScrollView>
-          {/* {recentRides?.map((item: any, index: number) => (
+          {recentRides?.map((item: any, index: number) => (
             <RideCard item={item} key={index} />
           ))}
           {recentRides?.length === 0 && (
             <Text>You didn't take any ride yet!</Text>
-          )} */}
+          )}
         </ScrollView>
       </View>
     </View>
     <Modal
       transparent={true}
-    //   visible={isModalVisible}
-    //   onRequestClose={handleClose}
+      visible={isModalVisible}
+      // onRequestClose={handleClose}
     >
       <TouchableOpacity style={styles.modalBackground} activeOpacity={1}>
         <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>

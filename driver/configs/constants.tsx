@@ -24,8 +24,13 @@ export const slides = [
       "Now enjoy your trip, pay your driver after reaching the destination!",
   },
 ];
+export interface rideDataTypes {
+  id:any
+  totalEarning: string;
+  title: string;
+}
 
-export const rideData = [
+export const rideData: rideDataTypes[] = [
   { id: "1", totalEarning: "Bdt 1200", title: "Total Earning" },
   { id: "2", totalEarning: "12", title: "Complete Ride" },
   { id: "3", totalEarning: "1", title: "Pending Ride" },
@@ -42,11 +47,11 @@ export const rideIcons = [
 export const recentRidesData: recentRidesTypes[] = [
   {
     id: "1",
-    user: "Shahriar Sajeeb",
+    user: "Olaide Emmanuel",
     rating: "5",
     earning: "142",
-    pickup: "Green line bus stand, Rajar Bag, Dhaka",
-    dropoff: "Banani Road no 11, Block F, Dhaka",
+    pickup: "27 Broode Boolevard, Yaba Axis",
+    dropoff: "Grace Land Estate, VI",
     time: "14 July 01:34 pm",
     distance: "8km",
   },

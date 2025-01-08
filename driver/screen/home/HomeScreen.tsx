@@ -54,7 +54,8 @@ const HomeScreen = () => {
     const [currentLocation, setCurrentLocation] = useState<any>(null);
     const [lastLocation, setLastLocation] = useState<any>(null);
     const handleStatusChange =async () => {
-        setIsOn(!isOn)
+      if(!loading) {
+        setloading(true)
         const accessToken = await AsyncStorage.getItem("accessToken")
         const changeStatus = await axios.put("http://192.168.0.111:7000/api/v1/driver/update-status", {
           status: isOn ? "active" : "inactive",
@@ -65,7 +66,11 @@ const HomeScreen = () => {
         })
         if(changeStatus.data){
           setIsOn(!isOn)
+          setloading(false)
+        } else {
+          setloading(false)
         }
+      }
     }
     const handleClose = () => {
       setIsModalVisible(false)
@@ -74,13 +79,15 @@ const HomeScreen = () => {
     <View style={[external.fx_1]}>
     <View style={styles.spaceBelow}>
       <Header isOn={true} toggleSwitch={() => handleStatusChange()} />
-      <FlatList
+      {/* <FlatList
         data={rideData}
         numColumns={2}
         renderItem={({ item }) => (
           <RenderRideItem item={item} colors={colors} />
+          // <Text>Render Item Screen</Text>
+
         )}
-      />
+      /> */}
       <View style={[styles.rideContainer, { backgroundColor: colors.card }]}>
         <Text style={[styles.rideTitle, { color: colors.text }]}>
           Recent Rides

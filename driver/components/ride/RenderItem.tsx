@@ -12,12 +12,10 @@ interface RenderRideItemProps {
 
 const RenderRideItem = ({item, colors}: any) => {
     const { driver } = useGetDriverData();
-    const iconIndex = parseInt(item.id) - 1;
-    const icon = rideIcons[iconIndex];
+    // const iconIndex = parseInt(item.id) - 1;
+    // const icon = rideIcons[iconIndex];
   return (
     <View style={styles.main}>
-
-    
       <View
         style={[
           styles.card,
@@ -49,7 +47,8 @@ const RenderRideItem = ({item, colors}: any) => {
               },
             ]}
           >
-            {icon}
+            {/* {icon} */}
+            <Text>Icon</Text>
           </View>
         </View>
         <View style={styles.cardBottom}>

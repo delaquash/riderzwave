@@ -25,14 +25,15 @@ export const sendingOtpToDriversPhone  = async (
     if (!phone_number) {
       throw new BadRequestError();
     }
-
+    
+    process.env.TWILIO_SERVICE_SID!
     // Call Twilio API
-    await client.verify.v2
-    ?.services(process.env.TWILIO_SERVICE_SID!)
+    await client.verify.v2?.services(process.env.TWILIO_ACCOUNT_SID!)
     .verifications.create({
       to: phone_number,
       channel: "sms",
     });
+    
     // Send success response
     return res.status(200).json({
       success: true,

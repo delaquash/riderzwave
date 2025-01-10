@@ -5,6 +5,7 @@ import {
   Platform,
   Pressable,
   StyleSheet,
+  ScrollView,
   Text,
   View,
 } from "react-native";
@@ -25,7 +26,7 @@ import Location from "expo-location";
 import axios from "axios";
 import _ from "lodash";
 import { Toast } from "react-native-toast-notifications";
-import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
+
 import Button from "@/components/common/button";
 import { parseDuration } from "@/utils/time/ParsedDuration";
 import moment from "moment";

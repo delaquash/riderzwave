@@ -47,7 +47,7 @@ const DocumentVerification = () => {
     };
     
     await axios.post("http://192.168.0.111:7000/api/v1/driver/send-otp-to-driver", {
-      phone_number: `+${driverData.phone_number}`,
+      phone_number: `+234${driverData.phone_number}`,
     }).then((res) => {
       console.log(res.data)
       router.push({ 

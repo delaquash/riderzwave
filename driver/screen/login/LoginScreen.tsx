@@ -69,14 +69,14 @@ const LoginScreen = () => {
                     countryCode={countryCode}
                     setCountryCode={setCountryCode}
                   />
-                  <View style={[external.mt_25, external.Pb_15]}>
+                  <TouchableOpacity activeOpacity={1} style={[external.mt_25, external.Pb_15]}>
                     <Button
                       title="Get OTP"
                       disabled={loading}
                       height={windowHeight(35)}
                       onPress={() => handleSubmit()}
                     />
-                  </View>
+                  </TouchableOpacity>
                   <View
                     style={{
                       flexDirection: "row",

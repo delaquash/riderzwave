@@ -1,4 +1,5 @@
 export const countryNameItems = [
+  { label: "Nigeria 🇳🇬", value: "234" },
     { label: "Afghanistan 🇦🇫", value: "93" },
     { label: "Albania 🇦🇱", value: "355" },
     { label: "Algeria 🇩🇿", value: "213" },
@@ -121,7 +122,7 @@ export const countryNameItems = [
     { label: "New Zealand 🇳🇿", value: "64" },
     { label: "Nicaragua 🇳🇮", value: "505" },
     { label: "Niger 🇳🇪", value: "227" },
-    { label: "Nigeria 🇳🇬", value: "234" },
+
     { label: "North Korea 🇰🇵", value: "850" },
     { label: "North Macedonia 🇲🇰", value: "389" },
     { label: "Norway 🇳🇴", value: "47" },

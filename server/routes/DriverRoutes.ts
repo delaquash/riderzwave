@@ -1,13 +1,13 @@
 import express from "express";
-import {updateDriverStatus, sendingOtpToDriversPhone,sendingOtpToEmail,verifyOtp,verifyPhoneOtpForLogin,verifyPhoneOtpForRegistration, verifyEmailOTP, getLoggedInDriverrData } from "../controllers/DriverController";
+import {updateDriverStatus, sendingOtpToDriverPhone,sendingOtpToEmail,verifyPhoneOtpForLogin,verifyPhoneOtpForRegistration, verifyEmailOTP, getLoggedInDriverrData } from "../controllers/DriverController";
 import { isAuthenticated, isDriverAuthenticated } from "../middlewares/isAuthenticated";
 
 const router = express.Router();
 
-router.post("/send-otp-to-driver", sendingOtpToDriversPhone);
+router.post("/send-otp-to-driver", sendingOtpToDriverPhone);
 // router.post("/verify-driver-otp", verifyOtp)
 router.post("/login", verifyPhoneOtpForLogin);
-router.post("/registration", verifyPhoneOtpForRegistration);
+router.post("/verify-otp", verifyPhoneOtpForRegistration);
 // router.post("/send-otp-email", sendingOtpToEmail)
 router.post("/verify-email-otp",  verifyEmailOTP);
 router.put("/update-status", isDriverAuthenticated, updateDriverStatus);

@@ -135,11 +135,15 @@ const HomeScreen = () => {
             distanceInterval: 1,
             timeInterval: 1000,
           }, (position) => {
-            
+            const { latitude, longitude} = position.coords
+            setCurrentLocation({ latitude, longitude });
+            if(driver && wsConnected) {
+              sendLocationUpdate({ latitude, longitude });
+            }
           }
         )
       }
-    }, [])
+    }, [driver])
   return ( 
     <View style={[external.fx_1]}>
     <View style={styles.spaceBelow}>

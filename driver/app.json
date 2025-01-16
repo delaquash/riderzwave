@@ -37,6 +37,10 @@
         "expo-font",
         {
           "fonts": ["./assets/fonts/TT-Octosquares-Medium.ttf"]
+        },
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
     ],

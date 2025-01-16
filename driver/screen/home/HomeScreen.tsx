@@ -24,17 +24,18 @@ import {
   import AsyncStorage from "@react-native-async-storage/async-storage";
   import * as GeoLocation from "expo-location";
   import { Toast } from "react-native-toast-notifications";
-//   import { useGetDriverData } from "@/hooks/useGetDriverData";
   import Constants from "expo-constants";
 //   import * as Notifications from "expo-notifications";
 //   import * as Device from "expo-device";
   import { router } from "expo-router";
 import RenderRideItem from "@/components/ride/RenderItem";
 import RideCard from "@/components/ride/RiceCard";
+import { useGetDriverData } from "@/hooks/useGetDriverData";
 
 
 const HomeScreen = () => {
     const { colors } = useTheme();
+    const { driver, isLoading: DriverDataLoading } = useGetDriverData();
     const [recentRides, setrecentRides] = useState([]);
     const [userData, setUserData] = useState<any>(null);
     const [isOn, setIsOn] = useState<any>();
@@ -53,6 +54,8 @@ const HomeScreen = () => {
     const [marker, setMarker] = useState<any>(null);
     const [currentLocation, setCurrentLocation] = useState<any>(null);
     const [lastLocation, setLastLocation] = useState<any>(null);
+    const ws = new WebSocket("ws://192.168.0.111:7000");
+    // const [driver, setDriver] = useState<any>(null);
     const handleStatusChange =async () => {
       if(!loading) {
         setloading(true)
@@ -66,16 +69,78 @@ const HomeScreen = () => {
         })
         if(changeStatus.data){
           setIsOn(!isOn)
+          await AsyncStorage.setItem("status", changeStatus.data.driver.status);
           setloading(false)
         } else {
           setloading(false)
         }
       }
     }
+
+    useEffect(()=> {
+      const getStatus = async () => {
+        const status = await AsyncStorage.getItem("status")
+        setIsOn(status === "active" ? true : false);                
+      }
+      getStatus()
+    }, [])
     const handleClose = () => {
       setIsModalVisible(false)
     }
-  return (
+
+    useEffect(() => {
+        ws.onopen = () => {
+          console.log("Connected to ws");
+          setWsConnected(true);
+        }
+
+        ws.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          console.log("Received message:", data); // Debugging line
+        }
+
+        ws.onerror = (e) => {
+          console.log("WebSocket error:", e);
+        }
+
+        return () => {
+          ws.close();
+        }
+    }, [])
+
+
+    const sendLocationUpdate=(location: any)=> {
+        if (ws.readyState === WebSocket.OPEN) {
+          const message:any = JSON.stringify({
+            "type": "locationUpdate",
+            data: location,
+            role: "driver",
+            driver: driver?.id
+          });
+          ws.send(message);
+      }
+    }
+
+    useEffect(()=> {
+      async () => {
+        let { status } = await GeoLocation.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Toast.show("Please give permission to access location to use");
+          return;
+        }
+
+        await GeoLocation.watchPositionAsync(
+          {
+            accuracy: Geolocation.Accuracy.High,
+            distanceInterval: 1,
+            timeInterval: 1000,
+          }, (position) => {
+            
+          }
+        )
+      }
+    }, [])
+  return ( 
     <View style={[external.fx_1]}>
     <View style={styles.spaceBelow}>
       <Header isOn={true} toggleSwitch={() => handleStatusChange()} />

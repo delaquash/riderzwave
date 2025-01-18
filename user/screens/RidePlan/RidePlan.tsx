@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./style";
 import MapView, { Marker } from "react-native-maps";
 import { external } from "@/styles/external.style";
@@ -26,12 +26,15 @@ import Location from "expo-location";
 import axios from "axios";
 import _ from "lodash";
 import { Toast } from "react-native-toast-notifications";
-
 import Button from "@/components/common/button";
 import { parseDuration } from "@/utils/time/ParsedDuration";
 import moment from "moment";
+import useGetUserData from "@/hooks/useGetUserData";
 
 const RidePlan = () => {
+  const { user } = useGetUserData();
+  const ws = useRef<any>(null)
+  const [wsConnected, setWsConnected] = useState(false)
   const [marker, setMarker] = useState<any>(null);
   const [places, setPlaces] = useState<any>([]);
   const [query, setQuery] = useState("");
@@ -81,6 +84,28 @@ const RidePlan = () => {
       });
     })();
   }, []);
+
+
+const initializeWebSocket = () => {
+  ws.current = new WebSocket("ws://192.168.0.111:8081");
+
+  ws.current.onopen = () => {
+    console.log("Connected to websocket server")
+    setWsConnected(true)
+  }
+
+  ws.current.onerror = (e: any) => {
+    console.log("WebSocket error", e.message)
+  }
+
+  ws.current.onclose = (e: any) => {
+    console.log("WebSocket closed", e.code, e.reason);
+    setWsConnected(false)
+    setTimeout(()=> {
+      initializeWebSocket()
+    }, 5000)
+  }
+}
 
   const calculateDistance = (lat1: any, lon1: any, lat2: any, lon2: any) => {
     var p = 0.017453292519943295; // Math.PI / 180
@@ -212,6 +237,20 @@ const RidePlan = () => {
       setDistance(distance)
     }
   },[marker, currentLocation])
+
+
+  const getNearByDrivers = () => {
+    ws.current.onmessage = async (e: any) => {
+      try {
+        const message = JSON.parse(e.data);
+        if(message.type === "nearbyDrivers") {
+          await getDriversData(message.drivers)
+        }
+      } catch (error) {
+        console.log(error, "Error parsing websocket")
+      }
+    }
+  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

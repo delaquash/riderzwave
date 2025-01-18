@@ -54,7 +54,7 @@ const HomeScreen = () => {
     const [marker, setMarker] = useState<any>(null);
     const [currentLocation, setCurrentLocation] = useState<any>(null);
     const [lastLocation, setLastLocation] = useState<any>(null);
-    const ws = new WebSocket("ws://192.168.0.111:7000");
+    const ws = new WebSocket("ws://192.168.0.111:8081");
     // const [driver, setDriver] = useState<any>(null);
     const handleStatusChange =async () => {
       if(!loading) {

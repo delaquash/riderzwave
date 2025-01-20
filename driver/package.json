@@ -40,7 +40,10 @@
     "react-native-svg": "^15.8.0",
     "react-native-switch-toggle": "^2.2.1",
     "react-native-toast-notifications": "^3.4.0",
-    "react-native-web": "^0.19.13"
+    "react-native-web": "^0.19.13",
+    "expo-notifications": "~0.29.12",
+    "expo-device": "~7.0.2",
+    "expo-constants": "~17.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

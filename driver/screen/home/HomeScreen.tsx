@@ -24,17 +24,19 @@ import {
   import AsyncStorage from "@react-native-async-storage/async-storage";
   import * as GeoLocation from "expo-location";
   import { Toast } from "react-native-toast-notifications";
-  import Constants from "expo-constants";
 //   import * as Notifications from "expo-notifications";
 //   import * as Device from "expo-device";
   import { router } from "expo-router";
 import RenderRideItem from "@/components/ride/RenderItem";
 import RideCard from "@/components/ride/RiceCard";
 import { useGetDriverData } from "@/hooks/useGetDriverData";
-
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const HomeScreen = () => {
     const { colors } = useTheme();
+    const notificationListener = useRef<any>();
     const { driver, isLoading: DriverDataLoading } = useGetDriverData();
     const [recentRides, setrecentRides] = useState([]);
     const [userData, setUserData] = useState<any>(null);
@@ -56,6 +58,62 @@ const HomeScreen = () => {
     const [lastLocation, setLastLocation] = useState<any>(null);
     const ws = new WebSocket("ws://192.168.0.111:8081");
     // const [driver, setDriver] = useState<any>(null);
+
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+
+    useEffect(() => {
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          // Handle the notification and extract data
+          const orderData = JSON.parse(
+            notification.request.content.data.orderData
+          );
+          setIsModalVisible(true);
+          setCurrentLocation({
+            latitude: orderData.currentLocation.latitude,
+            longitude: orderData.currentLocation.longitude,
+          });
+          setMarker({
+            latitude: orderData.marker.latitude,
+            longitude: orderData.marker.longitude,
+          });
+          setRegion({
+            latitude:
+              (orderData.currentLocation.latitude + orderData.marker.latitude) /
+              2,
+            longitude:
+              (orderData.currentLocation.longitude + orderData.marker.longitude) /
+              2,
+            latitudeDelta:
+              Math.abs(
+                orderData.currentLocation.latitude - orderData.marker.latitude
+              ) * 2,
+            longitudeDelta:
+              Math.abs(
+                orderData.currentLocation.longitude - orderData.marker.longitude
+              ) * 2,
+          });
+          setdistance(orderData.distance);
+          setcurrentLocationName(orderData.currentLocationName);
+          setdestinationLocationName(orderData.destinationLocation);
+          setUserData(orderData.user);
+        });
+  
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      };
+    }, []);
+
     const handleStatusChange =async () => {
       if(!loading) {
         setloading(true)

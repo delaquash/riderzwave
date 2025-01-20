@@ -8,6 +8,7 @@ import {
   ScrollView,
   Text,
   View,
+  ActivityIndicator,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./style";
@@ -41,7 +42,7 @@ const RidePlan = () => {
   const [currentLocation, setCurrentLocation] = useState<any>(null);
   const [distance, setDistance] = useState<any>(null);
   const [locationSelected, setLocationSelected] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState("car");
+  const [selectedVehicle, setSelectedVehicle] = useState("Car");
   const [region, setRegion] = useState<any>({
     latitude: 9.082, // Nigeria's approximate center latitude
     longitude: 8.6753, // Nigeria's approximate center longitude
@@ -264,6 +265,15 @@ useEffect(()=> {
 
   const getDriversData = async(driver: any) => {
       const driverIds = driverLists.map((driver: any) => driver.id).join(",")
+      const res = await axios.get("http://192.168.0.111:7000/api/v1/driver/getDriversById", {
+        params: {
+         ids: driverIds
+        }
+      }
+    )
+    const driverData = res.data
+    setdriverLists(driverData)
+    setdriverLoader(false)
   }
 
   const requestNearbyDrivers = () => {
@@ -319,7 +329,13 @@ useEffect(()=> {
       <View style={styles.contentContainer}>
         <View style={[styles.container]}>
           {locationSelected ? (
-              <ScrollView
+              <>
+                {driverLoader ? (
+                  <View style={{flex:1, alignItems: "center", justifyContent: "center"}}>
+                    <ActivityIndicator size={"large"}/>
+                  </View>
+                ) : (
+                  <ScrollView
                 style={{
                   height: windowHeight(280),
                   paddingBottom: windowWidth(20),
@@ -353,19 +369,26 @@ useEffect(()=> {
                     padding: windowHeight(10)
                   }}
                 >
-                  <Pressable
+                  {driverLists.map((driver: DriverType) => (
+                    <Pressable
                     style={{
                       marginVertical: 5,
                       padding: 10,
                       borderRadius: 10,
                       width: 420,
-                      // borderWidth: selectedVehcile === driver.vehicle_type ? 2 : 0,
+                      borderWidth: selectedVehicle === driver.vehicle_type ? 2 : 0,
                     }}
                     onPress={() => {}}
                   >
                     <View style={{ margin: "auto"}}>
                       <Image 
-                        source={require("@/assets/images/vehicles/car.png")}
+                        source={
+                          driver?.vehicle_type === "Car"
+                          ? require("@/assets/images/vehicles/car.png")
+                          : driver?.vehicle_type === "Bike"
+                          ? require("@/assets/images/vehicles/bike.png")
+                          : require("@/assets/images/vehicles/bike.png")
+                        }
                         style={{ width: 90, height: 80 }}
                       />
                     </View>
@@ -379,7 +402,7 @@ useEffect(()=> {
                     >
                       <View>
                       <Text style={{ fontSize: 20, fontWeight: "600" }}>
-                              {/* RideWave {driver?.vehicle_type} */}
+                              RideWave {driver?.vehicle_type}
                             </Text>
                             <Text style={{ fontSize: 16 }}>
                               {getEstimatedArrivalTime(travelTimes.driving)}{" "}
@@ -394,11 +417,12 @@ useEffect(()=> {
                           >
                             NGN{" "}
                             {(distance.toFixed(2) 
-                            // *  parseInt(driver.rate)
+                            *  parseInt(driver.rate)
                             ).toFixed(2)}
                           </Text>
                     </View>
                   </Pressable>
+                  ))}
                   <View
                       style={{
                         paddingHorizontal: windowWidth(10),
@@ -409,11 +433,13 @@ useEffect(()=> {
                         backgroundColor={"#000"}
                         textColor="#fff"
                         title={`Confirm Booking`}
-                        // onPress={() => handleOrder()}
+                        onPress={() => handleOrder()}
                       />
                     </View>
                 </View>
               </ScrollView>
+                )}
+              </>
           ) : (
             <>
               <View style={{ flexDirection: "row", alignItems: "center" }}>

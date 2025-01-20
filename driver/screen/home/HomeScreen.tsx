@@ -8,25 +8,23 @@ import {
     ScrollView,
     StyleSheet
   } from "react-native";
-  import React, { useEffect, useRef, useState } from "react";
-  import Header from "@/components/common/Header";
-  import { recentRidesData, rideData } from "@/configs/constants";
-  import { useTheme } from "@react-navigation/native";
-  import { external } from "@/styles/external.style";
-  import styles from "./styles";
-  import MapView, { Marker, Polyline } from "react-native-maps";
-  import MapViewDirections from "react-native-maps-directions";
-  import { windowHeight, windowWidth } from "@/themes/app.constant";
-  import { Gps, Location } from "@/utils/icons";
-  import color from "@/themes/app.colors";
-  import Button from "@/components/common/button";
-  import axios from "axios";
-  import AsyncStorage from "@react-native-async-storage/async-storage";
-  import * as GeoLocation from "expo-location";
-  import { Toast } from "react-native-toast-notifications";
-//   import * as Notifications from "expo-notifications";
-//   import * as Device from "expo-device";
-  import { router } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import Header from "@/components/common/Header";
+import { recentRidesData, rideData } from "@/configs/constants";
+import { useTheme } from "@react-navigation/native";
+import { external } from "@/styles/external.style";
+import styles from "./styles";
+import MapView, { Marker, Polyline } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
+import { windowHeight, windowWidth } from "@/themes/app.constant";
+import { Gps, Location } from "@/utils/icons";
+import color from "@/themes/app.colors";
+import Button from "@/components/common/button";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as GeoLocation from "expo-location";
+import { Toast } from "react-native-toast-notifications";
+import { router } from "expo-router";
 import RenderRideItem from "@/components/ride/RenderItem";
 import RideCard from "@/components/ride/RiceCard";
 import { useGetDriverData } from "@/hooks/useGetDriverData";
@@ -114,6 +112,64 @@ const HomeScreen = () => {
       };
     }, []);
 
+
+    useEffect(() => {
+      registerForPushNotificationsAsync();
+    }, []);
+  
+    async function registerForPushNotificationsAsync() {
+      if (Device.isDevice) {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== "granted") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== "granted") {
+          Toast.show("Failed to get push token for push notification!", {
+            type: "danger",
+          });
+          return;
+        }
+        const projectId =
+          Constants?.expoConfig?.extra?.eas?.projectId ??
+          Constants?.easConfig?.projectId;
+        if (!projectId) {
+          Toast.show("Failed to get project id for push notification!", {
+            type: "danger",
+          });
+        }
+        try {
+          const pushTokenString = (
+            await Notifications.getExpoPushTokenAsync({
+              projectId,
+            })
+          ).data;
+          console.log(pushTokenString);
+          // return pushTokenString;
+        } catch (e: unknown) {
+          Toast.show(`${e}`, {
+            type: "danger",
+          });
+        }
+      } else {
+        Toast.show("Must use physical device for Push Notifications", {
+          type: "danger",
+        });
+      }
+  
+      if (Platform.OS === "android") {
+        Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: "#FF231F7C",
+        });
+      }
+    }
+  
+
     const handleStatusChange =async () => {
       if(!loading) {
         setloading(true)
@@ -166,6 +222,28 @@ const HomeScreen = () => {
         }
     }, [])
 
+    const haversineDistance = (coords1: any, coords2: any) => {
+      const toRad = (x: any) => (x * Math.PI) / 180;
+  
+      const R = 6371e3; // Radius of the Earth in meters
+      const lat1 = toRad(coords1.latitude);
+      const lat2 = toRad(coords2.latitude);
+      const deltaLat = toRad(coords2.latitude - coords1.latitude);
+      const deltaLon = toRad(coords2.longitude - coords1.longitude);
+  
+      const a =
+        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+        Math.cos(lat1) *
+          Math.cos(lat2) *
+          Math.sin(deltaLon / 2) *
+          Math.sin(deltaLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+      const distance = R * c; // Distance in meters
+      return distance;
+    };
+  
+
 
     const sendLocationUpdate=(location: any)=> {
         if (ws.readyState === WebSocket.OPEN) {
@@ -180,7 +258,7 @@ const HomeScreen = () => {
     }
 
     useEffect(()=> {
-      async () => {
+      (async () => {
         let { status } = await GeoLocation.requestForegroundPermissionsAsync();
         if (status !== "granted") {
           Toast.show("Please give permission to access location to use");
@@ -194,13 +272,28 @@ const HomeScreen = () => {
             timeInterval: 1000,
           }, (position) => {
             const { latitude, longitude} = position.coords
-            setCurrentLocation({ latitude, longitude });
+            const newLocation = { latitude, longitude };
+
+            if(lastLocation){
+              const distance = haversineDistance(lastLocation, newLocation);            
+            if(lastLocation > 200){
+              setCurrentLocation(newLocation)
+              setLastLocation(newLocation)
+            }
+
             if(driver && wsConnected) {
-              sendLocationUpdate({ latitude, longitude });
+              setLastLocation(newLocation)
+            } else {
+                setCurrentLocation(newLocation)
+                setLastLocation(newLocation)
+                if(driver && wsConnected) {
+                  sendLocationUpdate(newLocation)
+                }
             }
           }
+          }
         )
-      }
+      })();
     }, [driver])
   return ( 
     <View style={[external.fx_1]}>

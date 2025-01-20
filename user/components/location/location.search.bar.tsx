@@ -5,6 +5,7 @@ import { Clock, Search } from "@/utils/icons";
 import { windowHeight, windowWidth } from "@/themes/app.constant";
 import DownArrow from "@/assets/icons/downArrow";
 import { router } from "expo-router";
+import React from "react"
 
 export default function LocationSearchBar() {
   return (
@@ -16,10 +17,11 @@ export default function LocationSearchBar() {
         { justifyContent: "space-around" },
         { paddingHorizontal: windowWidth(18) },
         { paddingRight: windowWidth(40) },
+        {borderRadius: windowHeight(10)}
       ]}
       onPress={() => router.push("/(routes)/rideplan")}
     >
-      <View style={{ flexDirection: "row", paddingLeft: windowWidth(30) }}>
+      <View style={{ flexDirection: "row", paddingLeft: windowWidth(10) }}>
         <Search />
         <Text
           style={[
@@ -39,6 +41,7 @@ export default function LocationSearchBar() {
             backgroundColor: "#fff",
             alignItems: "center",
             justifyContent: "center",
+            marginLeft: -70
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>

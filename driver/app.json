@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "newArchEnabled": true,
     "scheme": "Ridewave-Driver",
     "userInterfaceStyle": "light",
     "splash": {
@@ -36,11 +37,20 @@
         "expo-font",
         {
           "fonts": ["./assets/fonts/TT-Octosquares-Medium.ttf"]
+        },
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas" :{
+        "projectId" : "fabb527e-74f6-4def-92f5-46bd4bfb64a0"
+      }
     }
   }
 }

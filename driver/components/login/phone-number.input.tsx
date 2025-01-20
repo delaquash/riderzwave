@@ -2,10 +2,21 @@ import { View, Text, TextInput } from "react-native";
 import { commonStyles } from "@/styles/common.style";
 import { windowHeight, windowWidth } from "@/themes/app.constant";
 import { external } from "@/styles/external.style";
-import styles from "@/screens/login/styles";
+import styles from "@/screen/login/style"
 import color from "@/themes/app.colors";
+import React from "react";
+import SelectInput from "../SelectInput/SelectInput";
+import { countryItems } from "@/configs/countrylist";
 
-export default function PhoneNumberInput({ width }: any) {
+
+interface Props {
+  width?: number;
+  phone_number: string;
+  setPhone_number: (phone_number: string) => void;
+  countryCode: string;
+  setCountryCode: (countryCode: string) => void;
+}
+export default function PhoneNumberInput({ width, countryCode, phone_number, setCountryCode, setPhone_number }: Props) {
   return (
     <View>
       <Text
@@ -29,11 +40,16 @@ export default function PhoneNumberInput({ width }: any) {
             },
           ]}
         >
-          <TextInput
-            style={[commonStyles.regularText]}
-            placeholderTextColor={color.subtitle}
-            placeholder="+880"
-            keyboardType="numeric"
+          
+            <SelectInput 
+            // title="+234"
+            placeholder="Select Country Code"
+            value={countryCode}
+            showWarning={false}
+            warning={"Please select your country code"}
+            onValueChange={(text)=>setCountryCode(text)}
+            items={countryItems}
+          
           />
         </View>
         <View
@@ -51,6 +67,8 @@ export default function PhoneNumberInput({ width }: any) {
             placeholder={"Enter your number"}
             keyboardType="numeric"
             maxLength={10}
+            value={phone_number}
+            onChangeText={setPhone_number}
           />
         </View>
       </View>

@@ -20,6 +20,7 @@ import {
     showWarning?: boolean;
     emailFormatWarning?: string;
     disabled?: boolean;
+    editable?: boolean
   }
   
  
@@ -34,6 +35,7 @@ const Input = ({
     showWarning,
     emailFormatWarning,
     disabled,
+    editable
   }: InputProps) => {
     const { colors } = useTheme();
   return (
@@ -53,6 +55,7 @@ const Input = ({
       value={value}
       aria-disabled={disabled}
       onChangeText={onChangeText}
+      editable={editable}
     />
     {showWarning && <Text style={[styles.warning]}>{warning}</Text>}
   </View>
@@ -64,7 +67,7 @@ export default Input
 const styles = StyleSheet.create({
     title: {
       fontFamily: fonts.medium,
-      fontSize: windowWidth(20),
+      fontSize: windowWidth(25),
       marginVertical: windowHeight(8),
     },
     input: {
@@ -74,6 +77,7 @@ const styles = StyleSheet.create({
       height: windowHeight(30),
       color: color.secondaryFont,
       paddingHorizontal: 10,
+      fontSize: windowWidth(20)
     },
     warning: {
       color: color.red,

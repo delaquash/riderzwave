@@ -418,3 +418,37 @@ export const verifyPhoneOtpForRegistration = async (
       })
     }
   }
+
+  export const getDriversById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { ids } = req.query as any;
+      console.log(ids)
+      if(!ids) {
+        return res.status(400).json({
+          success: false, 
+          message: "Please provide driver ids"
+        })
+      }
+
+      const driverIds =  ids.split(",");
+
+      // fetch drivers from database
+      const drivers = await prisma.driver.findMany({
+        where: {
+          id: {
+            in: driverIds
+          }
+        }
+      })
+      res.status(200).json({
+        success: true,
+        drivers
+      })
+    } catch (error) {
+      console.error("Error fetchong drivers by id", error)
+      res.status(500).json({
+        success: false,
+        message: "Internal server error!"
+      })
+    }
+  }

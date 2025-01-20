@@ -107,6 +107,15 @@ const initializeWebSocket = () => {
   }
 }
 
+useEffect(()=> {
+  initializeWebSocket();
+  return () => {
+    if(ws.current) {
+      ws.current.close()
+    }
+  }
+},[])
+
   const calculateDistance = (lat1: any, lon1: any, lat2: any, lon2: any) => {
     var p = 0.017453292519943295; // Math.PI / 180
     var c = Math.cos;
@@ -216,6 +225,7 @@ const initializeWebSocket = () => {
         longitude: lng,
       });
       setPlaces([]);
+      requestNearbyDrivers()
       setLocationSelected(true);
       setkeyboardAvoidingHeight(false);
       if (currentLocation) {
@@ -249,6 +259,33 @@ const initializeWebSocket = () => {
       } catch (error) {
         console.log(error, "Error parsing websocket")
       }
+    }
+  }
+
+  const getDriversData = async(driver: any) => {
+      const driverIds = driverLists.map((driver: any) => driver.id).join(",")
+  }
+
+  const requestNearbyDrivers = () => {
+    if(currentLocation && wsConnected) {
+      ws.current.send(
+        JSON.stringify({
+          type: "requestRide",
+          role: "user",
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+        })
+      )
+      getNearByDrivers()
+    }
+  }
+
+
+  const handleOrder = async() => {
+    const data = {
+      driver: selectedDriver || driverLists[0],
+      user,
+      currentLocation
     }
   }
   return (
